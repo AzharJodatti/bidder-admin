@@ -44,6 +44,10 @@ public class Constants {
 	public static final String USER_ROLE_BOOKIE = "bookie";
 	public static final String USER_ROLE_ADMIN = "admin";
 	
+	public static final String OPEN = "open";
+	public static final String close = "close";
+	public static final String JODI = "jodi";
+	
 	/*Database schemas*/
 	public static final String USER_SCHEMA ="Users";
 	public static final String BOOKIE_DETAILS ="bookie_details";

@@ -2,6 +2,7 @@ package com.invictusdynamics.bookie.service;
 
 import java.util.List;
 
+import com.bid.dto.TransactionsDTO;
 import com.invictusdynamics.bookie.entity.LuckyNumberDetails;
 import com.invictusdynamics.bookie.entity.TimeDetails;
 
@@ -39,4 +40,6 @@ public interface LuckyNumberService {
 	public List<LuckyNumberDetails> getLuckyNumberDetails();
 
 	public LuckyNumberDetails getTodaysLuckyNumber();
+
+	public TransactionsDTO getCalculatedTransactionDetails();
 }

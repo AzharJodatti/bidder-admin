@@ -2,6 +2,7 @@ package com.invictusdynamics.bookie.serviceimpl;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -9,9 +10,13 @@ import java.util.ResourceBundle;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import com.invictusdynamics.bookie.entity.BookieDetails;
+import com.invictusdynamics.bookie.entity.LoginDetails;
+import com.invictusdynamics.bookie.entity.Recharges;
 import com.invictusdynamics.bookie.entity.Wallet;
 import com.invictusdynamics.bookie.global.SessionValue;
 import com.invictusdynamics.bookie.sequence.BookieSequence;
@@ -20,6 +25,8 @@ import com.invictusdynamics.bookie.service.BookieService;
 import com.invictusdynamics.bookie.service.SequenceDao;
 import com.invictusdynamics.bookie.utility.Constants;
 import com.invictusdynamics.bookie.utility.Utility;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
@@ -65,6 +72,7 @@ public class BookieServiceImpl implements BookieService {
 				returnValue = messageBundle.getString("saveBookieSuccess");
 			} catch (Exception exception) {
 				returnValue = messageBundle.getString("saveBookieFailure");
+				exception.printStackTrace();
 				throw exception;
 			}
 		}
@@ -107,6 +115,7 @@ public class BookieServiceImpl implements BookieService {
 
 		} catch (Exception exception) {
 			System.out.println(exception);
+			exception.printStackTrace();
 		}
 		return bookieDetailList;
 	}
@@ -133,7 +142,48 @@ public class BookieServiceImpl implements BookieService {
 			returnValue = messageBundle.getString("saveSuccess");
 		} catch (Exception exception) {
 			System.out.println(exception);
+			exception.printStackTrace();
 		}
 		return returnValue;
+	}
+
+	@Override
+	public String transferAmountToUser(String userId, Long coinTransferValue) {
+		String retrunValue = messageBundle.getString("saveFailure"); 
+		try {
+			if(userId != null) {
+				Recharges recharges = null;
+				Query searchUserQuery = new Query(Criteria.where("userId").is(userId));
+				DBCollection rechargeCollection = mongoTemplate.getCollection("recharges");
+				recharges = mongoTemplate.findOne(searchUserQuery, Recharges.class);
+				Long existingCoins = 0L;
+				if (recharges != null) {
+					existingCoins = recharges.getCoins();
+
+					existingCoins = existingCoins + coinTransferValue;
+					recharges.setCoins(existingCoins);
+					Integer intupdateCoins = existingCoins.intValue();
+
+					DBObject query = new BasicDBObject("userId", userId);
+					DBObject update = new BasicDBObject();
+					update.put("$set", new BasicDBObject("coins", intupdateCoins));
+					retrunValue = messageBundle.getString("saveSuccess");
+					/*DBCursor cursor = rechargeCollection.find();
+					try {
+						while (cursor.hasNext()) {
+							System.out.println(cursor.next());
+						}
+					} finally {
+						cursor.close();
+					}*/
+					rechargeCollection.findAndModify(query, update);
+				}
+				
+			}
+		} catch (Exception exception) {
+			exception.printStackTrace();
+			System.out.println(exception);
+		}
+		return retrunValue;
 	}
 }

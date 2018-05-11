@@ -2,7 +2,6 @@ package com.invictusdynamics.bookie.controller;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bid.dto.TransactionsDTO;
 import com.invictusdynamics.bookie.entity.BookieDetails;
 import com.invictusdynamics.bookie.entity.LoginDetails;
 import com.invictusdynamics.bookie.entity.LuckyNumberDetails;
@@ -125,20 +125,35 @@ public class BookieController {
 		List<LoginDetails> usersDetailsList = null;
 		List<TransactionsDetails> transactionsDetailsList = null;
 		LuckyNumberDetails luckyNumberDetails = null;
+		TransactionsDTO transactionsDTO = null; 
 		ModelAndView modelAndView = new ModelAndView("bookie/BookieSetellment");
-		DateFormat simpleDateFormat = new SimpleDateFormat("YYYY-MM-DD"); 
 		try {
 			usersDetailsList = agentService.readLoginDetailsByRole(Constants.USER_ROLE_USER);
 			transactionsDetailsList = transactionService.getTransactionDetails();
 			luckyNumberDetails = luckyNumberService.getTodaysLuckyNumber();
+			transactionsDTO = luckyNumberService.getCalculatedTransactionDetails();
 			
 			modelAndView.addObject("usersDetailsList", usersDetailsList);
 			modelAndView.addObject("transactionsDetailsList", transactionsDetailsList);
 			modelAndView.addObject("luckyNumberDetails", luckyNumberDetails);
+			modelAndView.addObject("transactionsDTO", transactionsDTO);
 		} catch (Exception exception) {
 			System.out.println("In AgentServiceImpl().readAgentDetails() Exception block : " + exception);
 			exception.printStackTrace();
 		}
 		return modelAndView;
+	}
+	
+	
+	@RequestMapping(value = "/transferAmountToUser", method = RequestMethod.POST)
+	@ResponseBody
+	public String transferAmountToUser(@RequestParam("userId") String userId, @RequestParam("coinTransferValue") Long coinTransferValue) {
+		String returnValue = messageBundle.getString("saveFailure");
+		try {
+			returnValue = bookieService.transferAmountToUser(userId, coinTransferValue);
+		} catch (Exception exception) {
+			System.out.println(exception);
+		}
+		return returnValue;
 	}
 }

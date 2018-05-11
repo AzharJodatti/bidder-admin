@@ -45,4 +45,6 @@ public interface BookieService {
 	 */
 	public String saveUserCoinTransferDetails(String userId, Long coinTransferValue) throws Exception;
 
+	public String transferAmountToUser(String userId, Long coinTransferValue);
+
 }

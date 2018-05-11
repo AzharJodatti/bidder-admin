@@ -13,6 +13,7 @@
 	<meta name="author" content="">
 	<title>Lucky Number</title>
 	
+	
 	<!-- Bootstrap core JavaScript-->
 	<script src="./vendor/jquery/jquery.min.js"></script>
 	<script src="./vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -26,20 +27,37 @@
 	<!-- Custom styles for this template-->
 	<link href="./css/sb-admin.css" rel="stylesheet">
 	
+	<!-- Bootstrap core JavaScript-->
+	<script src="./vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<!-- Core plugin JavaScript-->
+	<script src="./vendor/jquery-easing/jquery.easing.min.js"></script>
 	<!-- Page level plugin JavaScript-->
 	<script src="./vendor/chart.js/Chart.min.js"></script>
 	<script src="./vendor/datatables/jquery.dataTables.js"></script>
 	<script src="./vendor/datatables/dataTables.bootstrap4.js"></script>
 	<!-- Custom scripts for all pages-->
 	<script src="./js/sb-admin.min.js"></script>
-	<!-- Custom scripts for this page-->
-	<script src="./js/sb-admin-datatables.min.js"></script>
-	<script src="./js/sb-admin-charts.min.js"></script>
 	
+	<!-- Countedown timer -->
+	<script src="./vendor/countdown/jquery-2.0.3.js"></script>
+	<!-- <script src="./vendor/countdown/jquery.countdownTimer.js"></script> -->
+	<link rel="stylesheet" type="text/css" href="./vendor/countdown/jquery.countdownTimer.css" />
+
 </head>
 
 <script type="text/javascript"> 
-	
+
+$(document).ready(function() {
+	var script = document.createElement('script');
+	script.src = "./vendor/countdown/jquery.countdownTimer.js";
+	document.head.appendChild(script);
+			
+	script.onload = function () {
+		/* calculateTime(); */
+		getTimerDetails();
+	}; 
+});
+
 function saveLuckyNumber() {
 	var openValue = $("#openValueTxt").val();
 	var closeValue = $("#closeValueTxt").val();
@@ -63,10 +81,12 @@ function saveLuckyNumber() {
 		errorMessage.push("\nPlease enter open value");
 	}
 	
-	if(closeValue == "" || closeValue == null) {
+	/* if(closeValue == "" || closeValue == null) {
 		errorMessage.push("\nPlease enter close value");
+	} */
+	if(closeValue == "" || closeValue == null) {
+		closeValue = null;
 	}
-	
 	if(errorMessage.length != 0) {
 		flag = false;
 	}
@@ -181,6 +201,64 @@ function backFromLuckyNum() {
 }
 </script>
 
+<script>
+
+function getTimerDetails() {
+	$.ajax({
+		type : "post",
+		url : "getTimeDetails",
+		data:{	
+			userId:null
+		},		
+		success : function(data) {
+			if(data=='ERROR') {
+				alert("Error")
+			} else {
+				if(data != null) {
+					var openTime = data.openTime;
+					var closeTime = data.closeTime;
+					if(openTime == undefined)
+						openTime = "00:00";
+					if(closeTime == undefined)
+						closeTime = "00:00";
+					calculateTime(openTime,closeTime);
+				} else {
+					calculateTime("00:00","00:00");
+				}
+				
+			}
+		},
+		error: function(e) {
+			alert("In error Block : " +e);
+		}
+	});
+}
+
+function calculateTime(openTime,closeTime) { 
+	var openTimeArray = openTime.split(":");
+	var closeTimeArray = closeTime.split(":");
+	var hours = closeTimeArray[0] - openTimeArray[0];
+	var minutes = closeTimeArray[1] - openTimeArray[1];
+	showTimer(hours,minutes);
+}
+
+function showTimer(hours, minutes) {
+	if((hours != 00 || hours != 0) || (minutes != 00 || minutes != 0)) {
+		$("#hm_timer").addClass("style h4   text-success");
+		$('#hm_timer').countdowntimer({
+	        hours : hours,
+	        minutes :minutes,
+	        size : "md"
+	    });
+	} else {
+		$("#hm_timer").text("Timeout");
+		$("#hm_timer").addClass("style h4   text-success");
+	}
+};
+
+</script>
+
+
 <body class="fixed-nav sticky-footer bg-dark" id="page-top">
 
   <%String username = "", userId="";
@@ -251,13 +329,12 @@ function backFromLuckyNum() {
           </div>
         </li>
         
-         <li class="nav-item">
+        <li class="nav-item">
           <a class="nav-link" data-toggle="modal" data-target="#">
             <%=username%>
           </a>
         </li>
-        
-        
+                        
         <li class="nav-item">
           <a class="nav-link" data-toggle="modal" data-target="#exampleModal">
             <i class="fa fa-fw fa-sign-out"></i>Logout</a>
@@ -280,11 +357,14 @@ function backFromLuckyNum() {
       	
       	<form name="luckNumberFrm" id="luckNumberFrm" action="" method="POST">
           <div class="card mb-3">
-          <div class="card-header"> Lucky Number Details</div>
+          <div class="card-header"> 
+          		Lucky Number Details
+          		<div id="countdowntimer" class="float-right"><span class="style h4 text-success" id="hm_timer"></span></div>
+          </div>
 	          <div class="card-body">
-		          <div class="form-group">
+		          <%-- <div class="form-group">
 		          	<img src="<c:url value="./images/timer.png"/>" title="Set Open / Close Time" data-toggle="modal" data-target="#timerModal" style="width:70px;height:70px;"/>
-		          </div>
+		          </div> --%>
 		          <div id="countdown"></div>
 		          <div class="form-group">
 		            <div class="form-row">

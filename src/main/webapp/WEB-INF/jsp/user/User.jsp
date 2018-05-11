@@ -35,10 +35,22 @@
 	<!-- Custom scripts for this page-->
 	<script src="./js/sb-admin-datatables.min.js"></script>
 	<script src="./js/sb-admin-charts.min.js"></script>
-
+		<!-- Countedown timer -->
+	<script src="./vendor/countdown/jquery-2.0.3.js"></script>
+	<script src="./vendor/countdown/jquery.countdownTimer.js"></script>
+	<link rel="stylesheet" type="text/css" href="./vendor/countdown/jquery.countdownTimer.css" />
 </head>
 
 <script type="text/javascript"> 
+$(document).ready(function() {
+	var script = document.createElement('script');
+	script.src = "./vendor/countdown/jquery.countdownTimer.js";
+	document.head.appendChild(script);
+			
+	script.onload = function () {
+		getTimerDetails();
+	}; 
+}); 
 
 function registerUser() {
 	
@@ -47,7 +59,7 @@ function registerUser() {
 	var name = $("#nameTxt").val();
 	var emailId = $("#emailTxt").val();
 	var userRole = $("#userRole").val();
-	
+	var percentage = $("#percentageTxt").val();
 	var errorMessage = [];
 	var flag = true;
 	
@@ -77,6 +89,7 @@ function registerUser() {
 				name:name,
 				emailId:emailId,
 				userRole:userRole,
+				percentage:percentage
 			},		
 			success : function(data) {
 				if(data=='ERROR') {
@@ -102,7 +115,62 @@ function back() {
 }	
 
 </script>
+<script>
 
+function getTimerDetails() {
+	$.ajax({
+		type : "post",
+		url : "getTimeDetails",
+		data:{	
+			userId:null
+		},		
+		success : function(data) {
+			if(data=='ERROR') {
+				alert("Error")
+			} else {
+				if(data != null) {
+					var openTime = data.openTime;
+					var closeTime = data.closeTime;
+					if(openTime == undefined)
+						openTime = "00:00";
+					if(closeTime == undefined)
+						closeTime = "00:00";
+					calculateTime(openTime,closeTime);
+				} else {
+					calculateTime("00:00","00:00");
+				}
+				
+			}
+		},
+		error: function(e) {
+			alert("In error Block : " +e);
+		}
+	});
+}
+
+function calculateTime(openTime,closeTime) { 
+	var openTimeArray = openTime.split(":");
+	var closeTimeArray = closeTime.split(":");
+	var hours = closeTimeArray[0] - openTimeArray[0];
+	var minutes = closeTimeArray[1] - openTimeArray[1];
+	showTimer(hours,minutes);
+}
+
+function showTimer(hours, minutes) {
+	if((hours != 00 || hours != 0) || (minutes != 00 || minutes != 0)) {
+		$("#hm_timer").addClass("style h4   text-success");
+		$('#hm_timer').countdowntimer({
+	        hours : hours,
+	        minutes :minutes,
+	        size : "md"
+	    });
+	} else {
+		$("#hm_timer").text("Timeout");
+		$("#hm_timer").addClass("style h4   text-success");
+	}
+};
+
+</script>
 <body class="fixed-nav sticky-footer bg-dark" id="page-top">
 
   <%String username = "";
@@ -201,7 +269,10 @@ function back() {
       	
       	<form name="registrationform" id="registrationform" action="" method="POST">
           <div class="card mb-3">
-          <div class="card-header"> User Details</div>
+          <div class="card-header"> 
+          		User Details
+          		<div id="countdowntimer" class="float-right"><span class="style h4 text-success" id="hm_timer"></span></div>
+          </div>
 	          <div class="card-body">
 		          <div class="form-group">
 		            <div class="form-row">
@@ -233,13 +304,17 @@ function back() {
 		         	<div class="form-row">
 			          	<div class="col-md-6">
 		                	<label for="userRoleSelect">Role</label>
-								<select id="userRole" name="userRole" class="form-control">
-									<option value=""> -- User Role--</option>
-									<option value="admin"> Admin </option>
-									<option value="bookie"> Bookie </option>
-									<option value="agent"> Agent </option> 
-									<option value="user"> User </option>
-								</select>		                
+							<select id="userRole" name="userRole" class="form-control">
+								<option value=""> -- User Role--</option>
+								<!-- <option value="admin"> Admin </option>
+								<option value="bookie"> Bookie </option>
+								<option value="agent"> Agent </option>  -->
+								<option value="user"> User </option>
+							</select>		                
+		              	</div>
+		              	<div class="col-md-6">
+		                	<label for="regionInputSelect">Set Percentage</label>
+							<input class="form-control" id="percentageTxt" name="percentageTxt" type="text" aria-describedby="nameHelp" value="" placeholder="Set Percentage"/>		                
 		              	</div>
 		         	</div>
 		         </div>
@@ -248,15 +323,12 @@ function back() {
 		          <div class="form-row">
 	      			<div class="col-md-4">
 	      				<input type="button" class="btn btn-primary btn-block" name="saveUserBtn" id="saveUserBtn" value="Save" onclick="registerUser();" />
-	      				<!-- <a class="btn btn-primary btn-block" href="#">Save</a> -->
 	      			</div>    
 	      			<div class="col-md-4">
 	      				<input type="button" class="btn btn-primary btn-block" name="continueBtn" id="continueBtn" value="Continue" onclick="#" />
-	      				<!-- <a class="btn btn-primary btn-block" href="#">Continue</a> -->
 	      			</div>
 	      			<div class="col-md-4">
 	      				<input type="button" class="btn btn-primary btn-block" name="backBtn" id="backBtn" value="Back" onclick="back()" />
-	      				<!-- <a class="btn btn-primary btn-block" href="#">Continue</a> -->
 	      			</div>
 		          </div>
 	          	</div>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:ehcache="http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/data/mongo
+        http://www.springframework.org/schema/data/mongo/spring-mongo-1.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring/ehcache-spring-1.1.xsd">
+
+	<context:component-scan base-package="com.invictusdynamics.bookie" />
+	<context:component-scan base-package="com.bid" />
+	
+	<aop:aspectj-autoproxy />
+	
+	<resources mapping="/js/**" location="/js/" />
+ 	<resources mapping="/css/**" location="/css/" />
+ 	<resources mapping="/pug/**" location="/pug/" />
+ 	<resources mapping="/scss/**" location="/scss/" />
+ 	<resources mapping="/vendor/**" location="/vendor/" />
+ 	<resources mapping="/images/**" location="/images/" />
+	<resources mapping="/resources/**" location="/resources/" />
+	
+	<beans:bean id="loggingAspect" class="com.invictusdynamics.bookie.aop.LoggingAspect"></beans:bean>
+	
+	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<beans:property name="prefix" value="/WEB-INF/jsp/" />
+		<beans:property name="suffix" value=".jsp" />
+	</beans:bean>
+	
+	<!-- Resolves request with multipart requests -->
+	<beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
+	
+		<beans:bean id="propertyConfigurer"
+        class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
+        p:location="classpath:mongoconfig.properties" />
+	
+	<!-- Mongo DB Configuration -->
+	
+	<!-- Mongo DB Factory-->
+	<mongo:db-factory id="mongoDbFactory" dbname="${spring.data.mongodb.database}" />
+	
+	<!-- Mongo -->
+ 	<beans:bean id="mongo" class="org.springframework.data.mongodb.core.MongoFactoryBean">
+	    <beans:property name="host" value="${spring.data.mongodb.host}" />
+	    <beans:property name="port" value="${spring.data.mongodb.port}" />
+    </beans:bean>
+	
+	<!-- mapping context -->
+	<beans:bean id="mappingContext" class="org.springframework.data.mongodb.core.mapping.MongoMappingContext"></beans:bean>
+	
+	<beans:bean id="defaultMongoTypeMapper" class="org.springframework.data.mongodb.core.convert.DefaultMongoTypeMapper">
+		<!-- <beans:constructor-arg>
+			<beans:value>null</beans:value>
+		</beans:constructor-arg> -->
+	</beans:bean>
+	
+	<!-- mappingMongoConverter -->
+	<beans:bean id="mappingMongoConverter" class="org.springframework.data.mongodb.core.convert.MappingMongoConverter">
+		<beans:constructor-arg>
+			<beans:ref bean="mongoDbFactory"/>
+		</beans:constructor-arg>
+		<beans:constructor-arg>
+			<beans:ref bean="mappingContext"/>
+		</beans:constructor-arg>
+		<beans:property name="typeMapper" ref="defaultMongoTypeMapper" />
+	</beans:bean>
+
+	<!-- Mongo Template-->
+	<beans:bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+		<beans:constructor-arg>
+			<beans:ref bean="mongoDbFactory"/>
+		</beans:constructor-arg>
+		
+		<beans:constructor-arg>
+			<beans:ref bean="mappingMongoConverter"/>
+		</beans:constructor-arg>
+	</beans:bean>
+	
+ 	<beans:bean id="SequenceDao" class="com.invictusdynamics.bookie.sequenceimpl.SequenceDaoImpl">
+	</beans:bean> 
+	
+	<beans:bean id="sessionValues" class="com.invictusdynamics.bookie.global.SessionValue" scope="session">
+		<aop:scoped-proxy />
+	</beans:bean>
+	
+	<annotation-driven />
+	
+</beans:beans>

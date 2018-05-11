@@ -28,6 +28,6 @@ public interface LoginService {
 	 * @param password
 	 * @throws Exception
 	 */
-	public Boolean addUser(String userId, String password, String name, String emailId, String userRole) throws Exception;
+	public Boolean addUser(String userId, String password, String name, String emailId, String userRole, Long percentage) throws Exception;
 
 }

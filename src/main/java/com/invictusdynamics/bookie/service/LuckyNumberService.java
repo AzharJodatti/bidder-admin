@@ -1,5 +1,8 @@
 package com.invictusdynamics.bookie.service;
 
+import java.util.List;
+
+import com.invictusdynamics.bookie.entity.LuckyNumberDetails;
 import com.invictusdynamics.bookie.entity.TimeDetails;
 
 /**
@@ -14,7 +17,7 @@ public interface LuckyNumberService {
 	 * @param region
 	 * @return
 	 */
-	public String saveLuckyNumber(Long openValue, Long closeValue, String region);
+	public String saveLuckyNumber(String openValue, String closeValue, String region);
 
 	/**
 	 * @param openValue
@@ -29,4 +32,11 @@ public interface LuckyNumberService {
 	 * @return
 	 */
 	public TimeDetails getTimeDetails(String userId);
+	
+	/**
+	 * @return
+	 */
+	public List<LuckyNumberDetails> getLuckyNumberDetails();
+
+	public LuckyNumberDetails getTodaysLuckyNumber();
 }

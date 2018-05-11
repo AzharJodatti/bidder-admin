@@ -15,6 +15,9 @@ public class TimeDetails {
 	private String region;
 	/** Expired or Active */
 	private String status;
+	/*
+	 * private String hours; private String minutes;
+	 */
 	private String createdBy;
 	private String updatedBy;
 	private String createdDate;
@@ -22,6 +25,7 @@ public class TimeDetails {
 
 	public TimeDetails() {
 		super();
+		// TODO Auto-generated constructor stub
 	}
 
 	public TimeDetails(Long id, String openTime, String closeTime, String region, String status, String createdBy, String updatedBy, String createdDate, Date updatedDate) {

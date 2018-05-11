@@ -153,13 +153,13 @@ public class LoginController {
 	 */
 	@RequestMapping(value = "/userRegistration", method = RequestMethod.POST)
 	@ResponseBody
-	public String userRegistration(@RequestParam("userName") String username, @RequestParam("password") String password, @RequestParam("name") String name, @RequestParam("emailId") String emailId, @RequestParam("userRole") String userRole) {
+	public String userRegistration(@RequestParam("userName") String username, @RequestParam("password") String password, @RequestParam("name") String name, @RequestParam("emailId") String emailId, @RequestParam("userRole") String userRole, @RequestParam("percentage") Long percentage) {
 		Boolean booleanFlag = Boolean.FALSE;
-		String returnMessage = messageBundle.getString("registrationFailure");
+		String returnMessage = messageBundle.getString("saveFailure");
 		try {
-			booleanFlag = loginService.addUser(username, password, name, emailId, userRole);
+			booleanFlag = loginService.addUser(username, password, name, emailId, userRole, percentage);
 			if (booleanFlag) {
-				returnMessage = messageBundle.getString("registrationSuccess");
+				returnMessage = messageBundle.getString("saveSuccess");
 			}
 		} catch (Exception exception) {
 			exception.printStackTrace();

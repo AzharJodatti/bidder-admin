@@ -1,8 +1,10 @@
 package com.invictusdynamics.bookie.serviceimpl;
 
 import java.sql.Timestamp;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import com.invictusdynamics.bookie.entity.LoginDetails;
 import com.invictusdynamics.bookie.entity.LuckyNumberDetails;
 import com.invictusdynamics.bookie.entity.TimeDetails;
 import com.invictusdynamics.bookie.global.SessionValue;
@@ -19,6 +22,8 @@ import com.invictusdynamics.bookie.sequence.TimeSequence;
 import com.invictusdynamics.bookie.service.LuckyNumberService;
 import com.invictusdynamics.bookie.service.SequenceDao;
 import com.invictusdynamics.bookie.utility.Constants;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
 
 @Service("luckyNumberServiceImpl")
 public class LuckyNumberServiceImpl implements LuckyNumberService {
@@ -36,16 +41,22 @@ public class LuckyNumberServiceImpl implements LuckyNumberService {
 	private SessionValue sessionValue;
 
 	@Override
-	public String saveLuckyNumber(Long openValue, Long closeValue, String region) {
+	public String saveLuckyNumber(String openValue, String closeValue, String region) {
 		String returnMessage = "", jodiNumber = "", userNameInSession = "";
+		Long openValueLong = null;
+		Long closeValueLong = null;
 		if (sessionValue != null) {
 			userNameInSession = sessionValue.getUserId();
 		}
 		if (!region.isEmpty()) {
 			LuckyNumberDetails luckyNumberDetails = new LuckyNumberDetails();
 			luckyNumberDetails.setId(sequenceDao.getNextSequenceId(Constants.LUCKY_NUMBER_SEQ_KEY, LuckyNumberSequence.class));
-			luckyNumberDetails.setOpen(openValue);
-			luckyNumberDetails.setOpen(closeValue);
+			if(openValue!=null && openValue!="")
+				openValueLong = Long.parseLong(openValue);
+			luckyNumberDetails.setOpen(openValueLong);
+			if(closeValue!=null && closeValue!="")
+				closeValueLong = Long.parseLong(closeValue);
+			luckyNumberDetails.setClose(closeValueLong);
 			luckyNumberDetails.setRegion(region);
 			if (openValue != null && closeValue != null) {
 				jodiNumber = String.valueOf(openValue) + String.valueOf(closeValue);
@@ -107,6 +118,43 @@ public class LuckyNumberServiceImpl implements LuckyNumberService {
 		searchUserQuery.addCriteria(Criteria.where("createdDate").is(simpleDateFormat.format(new Date())));
 		timeDetails = mongoTemplate.findOne(searchUserQuery, TimeDetails.class);
 		return timeDetails;
+	}
+
+	@Override
+	public List<LuckyNumberDetails> getLuckyNumberDetails() {
+		List<LuckyNumberDetails> luckyNumberDetailList = null;
+		try {
+			luckyNumberDetailList = mongoTemplate.findAll(LuckyNumberDetails.class);
+		} catch (Exception exception) {
+			System.out.println(exception);
+		}
+		return luckyNumberDetailList;
+	}
+
+	@Override
+	public LuckyNumberDetails getTodaysLuckyNumber() {
+		LuckyNumberDetails luckyNumberDetails = null;
+		List<LuckyNumberDetails>  luckyNumberDetailsList = null;
+		DateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		
+		try {
+			Query searchUserQuery = new Query(Criteria.where("createdDate").is(new Date()));
+			luckyNumberDetails = mongoTemplate.findOne(searchUserQuery, LuckyNumberDetails.class);
+			luckyNumberDetailsList = getLuckyNumberDetails();
+			if(luckyNumberDetailsList!=null) {
+				for(LuckyNumberDetails luckyNumberObj :luckyNumberDetailsList) {
+					Date dateFromDb = luckyNumberObj.getCreatedDate();
+					String dbFormattedDate = simpleDateFormat.format(dateFromDb);
+					Date currDate = new Date();
+					String currentFormaatedDate = simpleDateFormat.format(currDate);
+					if(dbFormattedDate.equals(currentFormaatedDate))
+						luckyNumberDetails = luckyNumberObj;
+				}
+			}
+		} catch (Exception exception) {
+			System.out.println(exception);
+		}
+		return luckyNumberDetails;
 	}
 
 }

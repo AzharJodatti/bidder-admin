@@ -99,7 +99,7 @@ public class LoginServiceImpl implements LoginService {
 	}
 
 	@Override
-	public Boolean addUser(String userId, String password, String name, String emailId, String userRole) throws Exception {
+	public Boolean addUser(String userId, String password, String name, String emailId, String userRole, Long percentage) throws Exception {
 		Boolean returnValue = Boolean.FALSE;
 		String userNameInSession =  "";
 		try {
@@ -119,6 +119,8 @@ public class LoginServiceImpl implements LoginService {
 			loginDetails.setName(name);
 			loginDetails.setEmailId(emailId);
 			loginDetails.setParentId(userNameInSession);
+			/**Set percentage in user case*/
+			loginDetails.setCommissionPercentage(percentage);
 			loginDetails.setCreatedBy(userNameInSession);
 			loginDetails.setUpdatedBy(userNameInSession);
 			loginDetails.setCreatedAt(new Timestamp(new Date().getTime()));

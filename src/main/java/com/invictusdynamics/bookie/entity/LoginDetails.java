@@ -29,9 +29,10 @@ public class LoginDetails {
 
 	public LoginDetails() {
 		super();
+		// TODO Auto-generated constructor stub
 	}
 
-	public LoginDetails(long id, String userLoginId, String name, String emailId, String parentId, String password, String userRole, long commissionPercentage, String createdBy, String updatedBy, Date createdAt, Date updatedAt) {
+	public LoginDetails(Long id, String userLoginId, String name, String emailId, String parentId, String password, String userRole, Long commissionPercentage, String createdBy, String updatedBy, Date createdAt, Date updatedAt) {
 		super();
 		this.id = id;
 		this.userLoginId = userLoginId;
@@ -47,11 +48,11 @@ public class LoginDetails {
 		this.updatedAt = updatedAt;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -103,11 +104,11 @@ public class LoginDetails {
 		this.userRole = userRole;
 	}
 
-	public long getCommissionPercentage() {
+	public Long getCommissionPercentage() {
 		return commissionPercentage;
 	}
 
-	public void setCommissionPercentage(long commissionPercentage) {
+	public void setCommissionPercentage(Long commissionPercentage) {
 		this.commissionPercentage = commissionPercentage;
 	}
 

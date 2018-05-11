@@ -23,9 +23,10 @@ public class Recharges {
 
 	public Recharges() {
 		super();
+		// TODO Auto-generated constructor stub
 	}
 
-	public Recharges(long id, String userId, long coins, String recharedBy, Date rechargeDate, String type, String createdBy, String updatedBy, Date createdAt, Date updatedAt) {
+	public Recharges(Long id, String userId, Long coins, String recharedBy, Date rechargeDate, String type, String createdBy, String updatedBy, Date createdAt, Date updatedAt) {
 		super();
 		this.id = id;
 		this.userId = userId;
@@ -39,11 +40,11 @@ public class Recharges {
 		this.updatedAt = updatedAt;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -55,11 +56,11 @@ public class Recharges {
 		this.userId = userId;
 	}
 
-	public long getCoins() {
+	public Long getCoins() {
 		return coins;
 	}
 
-	public void setCoins(long coins) {
+	public void setCoins(Long coins) {
 		this.coins = coins;
 	}
 

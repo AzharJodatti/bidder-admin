@@ -1,6 +1,6 @@
 package com.invictusdynamics.bookie.entity;
 
-import java.sql.Date;
+import java.util.Date;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -17,7 +17,7 @@ public class TransactionsDetails {
 
 	/** :"OPEN|CLOSE|JODI", */
 	private String type;
-	private Long number;
+	private String number;
 	private Long coins;
 	private String userId;
 	private String playedBy;
@@ -29,13 +29,30 @@ public class TransactionsDetails {
 
 	public TransactionsDetails() {
 		super();
+		// TODO Auto-generated constructor stub
 	}
 
-	public long getId() {
+	public TransactionsDetails(Long id, Date date, String category, String type, String number, Long coins, String userId, String playedBy, String createdBy, String updatedBy, Date createdAt, Date updatedAt) {
+		super();
+		this.id = id;
+		this.date = date;
+		this.category = category;
+		this.type = type;
+		this.number = number;
+		this.coins = coins;
+		this.userId = userId;
+		this.playedBy = playedBy;
+		this.createdBy = createdBy;
+		this.updatedBy = updatedBy;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
+	}
+
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -63,19 +80,19 @@ public class TransactionsDetails {
 		this.type = type;
 	}
 
-	public long getNumber() {
+	public String getNumber() {
 		return number;
 	}
 
-	public void setNumber(long number) {
+	public void setNumber(String number) {
 		this.number = number;
 	}
 
-	public long getCoins() {
+	public Long getCoins() {
 		return coins;
 	}
 
-	public void setCoins(long coins) {
+	public void setCoins(Long coins) {
 		this.coins = coins;
 	}
 
@@ -131,4 +148,5 @@ public class TransactionsDetails {
 	public String toString() {
 		return "TransactionsDetails [id=" + id + ", date=" + date + ", category=" + category + ", type=" + type + ", number=" + number + ", coins=" + coins + ", userId=" + userId + ", playedBy=" + playedBy + ", createdBy=" + createdBy + ", updatedBy=" + updatedBy + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
 	}
+
 }

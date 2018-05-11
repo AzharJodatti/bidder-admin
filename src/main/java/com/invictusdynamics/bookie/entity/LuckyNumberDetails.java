@@ -22,6 +22,7 @@ public class LuckyNumberDetails {
 
 	public LuckyNumberDetails() {
 		super();
+		// TODO Auto-generated constructor stub
 	}
 
 	public LuckyNumberDetails(Long id, Long open, Long close, String jodi, Long pan, String region, String createdBy, String updatedBy, Date createdDate, Date updatedDate) {

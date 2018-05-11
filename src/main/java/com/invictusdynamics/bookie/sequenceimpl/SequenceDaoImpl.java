@@ -7,12 +7,15 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
+import com.invictusdynamics.bookie.entity.TransactionsDetails;
 import com.invictusdynamics.bookie.exception.SequenceException;
 import com.invictusdynamics.bookie.sequence.BookieSequence;
 import com.invictusdynamics.bookie.sequence.CoinSequence;
 import com.invictusdynamics.bookie.sequence.LuckyNumberSequence;
+import com.invictusdynamics.bookie.sequence.RechargeSequence;
 import com.invictusdynamics.bookie.sequence.SequenceCounter;
 import com.invictusdynamics.bookie.sequence.TimeSequence;
+import com.invictusdynamics.bookie.sequence.TransactionSequence;
 import com.invictusdynamics.bookie.service.SequenceDao;
 
 public class SequenceDaoImpl implements SequenceDao {
@@ -54,7 +57,15 @@ public class SequenceDaoImpl implements SequenceDao {
 			update.inc("timeSeq", 1);
 			TimeSequence timeSequence= (TimeSequence) mongoTemplate.findAndModify(query, update, options, className);
 			sequenceNumber = timeSequence.getTimeSeq();
-		}
+		} else if (className != null && className.getName().equals(RechargeSequence.class.getCanonicalName())) {
+			update.inc("rechargeSeq", 1);
+			RechargeSequence rechargeSequence= (RechargeSequence) mongoTemplate.findAndModify(query, update, options, className);
+			sequenceNumber = rechargeSequence.getRechargeSeq();
+		} else if (className != null && className.getName().equals(TransactionSequence.class.getCanonicalName())) {
+			update.inc("transactSeq", 1);
+			TransactionSequence transactionSequence= (TransactionSequence) mongoTemplate.findAndModify(query, update, options, className);
+			sequenceNumber = transactionSequence.getTransactSeq();
+		} 
 
 		/* if no id, throws SequenceException optional, just a way to tell user when the sequence id is failed to generate. */
 		if (sequenceNumber == null) {

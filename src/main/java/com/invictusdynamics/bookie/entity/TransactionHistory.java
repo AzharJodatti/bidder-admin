@@ -27,9 +27,10 @@ public class TransactionHistory {
 
 	public TransactionHistory() {
 		super();
+		// TODO Auto-generated constructor stub
 	}
 
-	public TransactionHistory(long id, Date date, String category, String type, long number, long coins, String userId, String playedBy, String createdBy, String updatedBy, Date createdAt, Date updatedAt) {
+	public TransactionHistory(Long id, Date date, String category, String type, Long number, Long coins, String userId, String playedBy, String createdBy, String updatedBy, Date createdAt, Date updatedAt) {
 		super();
 		this.id = id;
 		this.date = date;
@@ -45,11 +46,11 @@ public class TransactionHistory {
 		this.updatedAt = updatedAt;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -77,19 +78,19 @@ public class TransactionHistory {
 		this.type = type;
 	}
 
-	public long getNumber() {
+	public Long getNumber() {
 		return number;
 	}
 
-	public void setNumber(long number) {
+	public void setNumber(Long number) {
 		this.number = number;
 	}
 
-	public long getCoins() {
+	public Long getCoins() {
 		return coins;
 	}
 
-	public void setCoins(long coins) {
+	public void setCoins(Long coins) {
 		this.coins = coins;
 	}
 

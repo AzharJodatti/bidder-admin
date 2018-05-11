@@ -1,6 +1,6 @@
 package com.invictusdynamics.bookie.entity;
 
-import java.sql.Date;
+import java.util.Date;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -20,9 +20,10 @@ public class Wallet {
 
 	public Wallet() {
 		super();
+		// TODO Auto-generated constructor stub
 	}
 
-	public Wallet(long id, String userId, long coins, String createdBy, String updatedBy, Date createdAt, Date updatedAt) {
+	public Wallet(Long id, String userId, Long coins, String createdBy, String updatedBy, Date createdAt, Date updatedAt) {
 		super();
 		this.id = id;
 		this.userId = userId;
@@ -33,11 +34,11 @@ public class Wallet {
 		this.updatedAt = updatedAt;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -49,11 +50,11 @@ public class Wallet {
 		this.userId = userId;
 	}
 
-	public long getCoins() {
+	public Long getCoins() {
 		return coins;
 	}
 
-	public void setCoins(long coins) {
+	public void setCoins(Long coins) {
 		this.coins = coins;
 	}
 
@@ -93,4 +94,5 @@ public class Wallet {
 	public String toString() {
 		return "Wallet [id=" + id + ", userId=" + userId + ", coins=" + coins + ", createdBy=" + createdBy + ", updatedBy=" + updatedBy + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
 	}
+
 }

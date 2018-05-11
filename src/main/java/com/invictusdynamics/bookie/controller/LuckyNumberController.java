@@ -1,5 +1,6 @@
 package com.invictusdynamics.bookie.controller;
 
+import java.util.List;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.invictusdynamics.bookie.entity.LuckyNumberDetails;
 import com.invictusdynamics.bookie.entity.TimeDetails;
 import com.invictusdynamics.bookie.service.LuckyNumberService;
 import com.invictusdynamics.bookie.utility.Constants;
@@ -33,7 +35,7 @@ public class LuckyNumberController {
 
 	@RequestMapping(value = "/saveLuckyNumber", method = RequestMethod.POST)
 	@ResponseBody
-	public String saveLuckyNumber(@RequestParam("openValue") Long openValue, @RequestParam("closeValue") long closeValue, @RequestParam("regionValue") String regionValue) {
+	public String saveLuckyNumber(@RequestParam("openValue") String openValue, @RequestParam("closeValue") String closeValue, @RequestParam("regionValue") String regionValue) {
 		String returnMessage = messageBundle.getString("luckyNumberSaveFailureMsg");
 		try {
 			returnMessage = luckyNumberService.saveLuckyNumber(openValue, closeValue, regionValue);
@@ -82,5 +84,17 @@ public class LuckyNumberController {
 			throw exception;
 		}
 		return timeDetails;
+	}
+	
+	@RequestMapping(value = "/getLuckyNumberDetails", method = RequestMethod.POST)
+	@ResponseBody
+	public List<LuckyNumberDetails> getLuckyNumberDetails(@RequestParam("userId") String userId) {
+		List<LuckyNumberDetails> luckynumberDetailsList = null;
+		try {
+			luckynumberDetailsList = luckyNumberService.getLuckyNumberDetails();
+		} catch (Exception exception) {
+			throw exception;
+		}
+		return luckynumberDetailsList;
 	}
 }
